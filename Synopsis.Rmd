@@ -1,0 +1,98 @@
+---
+title: "Competitor resilience and Program performance of Alone TV series"
+output: html_document
+date: "2023-09-11"
+author: Ozgur Ozubek
+---
+
+
+##Synopsis
+
+As a part of #TidyTuesday , in this Rpubs, I will try to depict my subjective relation*  between the casting resilience of competitors and the rating perforance of the show
+
+* subjective due to some of my claims are yet to be statistically tested.
+
+## Loading data and required libraries
+
+the data is in .csv format and can be directly read from the the following links I just need "episodes", "survivalists" data sets required libraries are ggplot2 and dplyr
+
+```{r message=FALSE, warning=FALSE}
+episodes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-24/episodes.csv')
+
+survivalists <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-01-24/survivalists.csv')
+
+library(ggplot2); library(dplyr)
+
+```
+
+## survivalists database
+
+The dataset gives detailed info about each competitor. What we need here is
+
+a)  the gender of the competitor ("gender" column)
+b)  no of days lasted in the competition ("days_lasted" column)
+
+```{r }
+
+survivalists %>% 
+  select (season, name, gender, days_lasted)
+```
+
+the boxplot below shows the distribution of the competitors resilience (i.e. days lasted in the season) according to gender
+
+```{r message=FALSE, warning=FALSE}
+survivalists %>% group_by(season)%>%
+ ggplot(aes(y=season , x=days_lasted, fill=gender)) + 
+        geom_boxplot(aes(group=season)) +facet_wrap(~gender) + 
+        labs(title="Casting resilience of each season") + 
+        scale_y_continuous(breaks = seq(min(survivalists$season), max(survivalists$season), by = 1))+
+  theme(text = element_text(size = 8)) 
+```
+
+Who says women cant survive alone in the wilderness! Here is what I saw in this graph: 
+
+The first season: there were only male competitors with a very poor resilience as majority of the male contestants did not last more than a week or so, meaning in the first of second episodes, majority of the competitors were gone and the show lasted with a handful competitors.\
+\
+2nd season: the casting decided to include women in the show this time, yet their selection of women was like their selection of men in the 1st season, as many women competitors got eliminated in the first week. Meanwhile casting did a good job selecting much fitter male competitors as the lasted much more better than the first episode
+
+3rd season: This season is where casting decided to raise the resilience bar of both male and female competitors as both male as their resilience were among the top in the history of the show. I believe casting was on a learning curve in the selection of competitors and by the start of 3rd season, they knew whom to cast.\
+\
+4th season: there is something very very wrong with this season as they totally sacked the casting people and did the job with a new one. there were very few women competitor this time and the average resilience quality of male competitors was not comparable to the last 2 episodes.\
+\
+In the 5th and 6th seasons, number of women participants increased, where males tend to last more episodes. 7th episode was when casting did pick the most one of the most resilient competitors in Alone TV series history, where females on average were about to overtake males. Yet the male outlier with 100 days of survival broke the record and won the season. \
+\
+\
+
+## Rating performance
+
+Episodes database contains audience performance of all season except 9th season. 
+I just handpicked season, episode and viewer performance figures among others. viewers depict the number of million people who watched the show.
+```{r}
+
+episodes %>% select (season, episode, viewers)
+```
+
+Below are the rating performance of each season
+
+```{r message=FALSE, warning=FALSE}
+episodes %>% 
+  ggplot(aes(x=episode, y=viewers)) + geom_line() + facet_wrap(~season) +geom_smooth(method=lm) +
+          scale_x_continuous(breaks = seq(1, 13, by = 1))+
+          scale_y_continuous(breaks = seq(1, 2.5, by = 0.5))+
+          theme(text = element_text(size = 8)) +
+          labs(title="Audience performance of each season") + ylab("viewers (million)")
+
+```
+
+
+If we read these time series with the resilience performance for each season, there are some interesting deductions:
+
+1st season: the first cut is the deepest so just like many shows, the first episode started with huge interest and increased popularity until the finale. 
+
+2nd season: neither the inclusion of weak female competitors nor better selection of male competitors did help the rating performance of the show. 
+
+3rd season: this is where the casting  learned to pick the best ingredients for the show. a handful but super competitive females who last till to the finale and one the best male casting with a best average resilience in show's history.
+
+4th season: This is where the casting people lost in the woods. just a couple of female competitors and a terrible group of male competitors. with the resilience bar increasing in the first 3 seasons, this was not the audience was expecting from the show. And the ratings, hence the popularity of the show start to erode. 
+
+5th season and onwards: from now on the casting people start to increase the quality of the competitors, yet thanks the to blow in the 4th season and the natural aging of TV series, the show failed to raise an average audience above 1.5 million. 
